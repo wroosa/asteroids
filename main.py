@@ -1,5 +1,8 @@
 import pygame
-from constants import * 
+from constants import *
+from player import Player
+from asteroid import Asteroid
+from asteroidfield import AsteroidField
 
 def main():
     print('Starting Asteroids!')
@@ -8,6 +11,20 @@ def main():
 
     pygame.init()
     screen = pygame.display.set_mode(SCREEN_DIMENSIONS)
+    dt = 0
+    clock = pygame.time.Clock()
+    
+
+    updatable = pygame.sprite.Group()
+    drawable = pygame.sprite.Group()
+    asteroids = pygame.sprite.Group()
+
+    Player.containers = (updatable, drawable)
+    Asteroid.containers = (asteroids, updatable, drawable)
+    AsteroidField.containers = (updatable)
+
+    player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+    asteroid_field = AsteroidField()
 
     # Game Loop
     while True:
@@ -17,9 +34,20 @@ def main():
             
         screen.fill('black')
 
+        # Update and draw sprites
+        updatable.update(dt)
+        for sprite in drawable:
+            sprite.draw(screen)
+        
+        # Logging
+        Text = "Hellos"
+        font = pygame.font.SysFont("arial", 36)
+        text_surface = font.render(Text, True, (255, 255, 255))
+        screen.blit(text_surface, (30, 30))
+
         # Render
         pygame.display.flip()
-
+        dt = clock.tick()/1000
 
 if __name__ == "__main__":
     main()
